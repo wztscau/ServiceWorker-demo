@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<script src="./version.js"></script>
+</head>
+<body>
+	<h1>Hello ServiceWorker</h1>
+	<div id="state"></div>
+	<div id="swState"></div>
+	<button id="clear">销毁ServiceWorker</button>
+</body>
+<script>
+	window.addEventListener('keypress', e => {
+		if (e.keyCode == 114) {
+			location.reload()
+		}
+	})
+
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('./service-worker.js')
+			.catch(e => console.error(e))
+			.then(registration => {
+				console.log('registration', registration)
+
+				let serviceWorker
+				;['installing', 'waiting', 'active'].forEach(state => {
+					if (registration[state]) {
+						serviceWorker = registration[state]
+						document.getElementById('state').innerHTML = '当前注册状态：' + state
+					}
+				})
+        if (serviceWorker) {
+        	document.getElementById('swState').innerHTML = '当前service worker状态：' + serviceWorker.state
+          serviceWorker.addEventListener('statechange', function (e) {
+            document.getElementById('swState').innerHTML = document.getElementById('swState').innerHTML + '<br>serviceWorker 状态发生改变，为：' + e.target.state
+          });
+        }
+			})
+	} else {
+		alert('辣鸡浏览器！！！')
+	}
+
+	document.getElementById('clear').addEventListener('click', async e => {
+		if (navigator.serviceWorker) {
+			let registrations = await navigator.serviceWorker.getRegistrations()
+			registrations.forEach(registration => {
+				console.log(`registration`, registration)
+				registration.unregister()
+			})
+			alert('成功')
+		}
+	})
+</script>
+</html>

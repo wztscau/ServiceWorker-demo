@@ -1,0 +1,11 @@
+{
+	"scripts": {
+		"dev": "node node_modules/nodemon/bin/nodemon.js server.js",
+		"start": "npm run dev"
+	},
+  "dependencies": {
+    "express": "^4.16.4",
+    "nodemon": "^1.18.9",
+    "path": "^0.12.7"
+  }
+}
